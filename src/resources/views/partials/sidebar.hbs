@@ -1,0 +1,101 @@
+<nav class='sidebar close'>
+    <header>
+        <div class='image-text'>
+            <span class='image'>
+                <!--<img src="logo.png" alt="">-->
+            </span>
+
+            <div class='text logo-text'>
+                <span class='name'>{{session.nickname}}</span>
+                <span class='profession'>Web developer</span>
+            </div>
+        </div>
+
+        <i class='bx bx-chevron-right toggle'></i>
+    </header>
+
+    <div class='menu-bar'>
+        <div class='menu'>
+            <ul class='menu-links'>
+                <li class='nav-link'>
+                    <a href='/dashboard'>
+                        <i class='bx bx-home-alt icon'></i>
+                        <span class='text nav-text'>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class='nav-link'>
+                    <a href='/charts'>
+                        <i class='bx bx-bar-chart-alt-2 icon'></i>
+                        <span class='text nav-text'>Charts</span>
+                    </a>
+                </li>
+                <li class='nav-link'>
+                    <a href='/main'>
+                        <i class='bx bx-bell icon'></i>
+                        <span class='text nav-text'>Main</span>
+                    </a>
+                </li>
+                <li class='nav-link'>
+                    <a href='/enterlog'>
+                        <i class='bx bx-pie-chart-alt icon'></i>
+                        <span class='text nav-text'>Enter logs</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class='bottom-content'>
+            <li class=''>
+                <a href='/logout'>
+                    <i class='bx bx-log-out icon'></i>
+                    <span class='text nav-text'>Logout</span>
+                </a>
+            </li>
+
+            <li class='mode'>
+                <div class='sun-moon'>
+                    <i class='bx bx-moon icon moon'></i>
+                    <i class='bx bx-sun icon sun'></i>
+                </div>
+                <span class='mode-text text'>Dark mode</span>
+
+                <div class='toggle-switch'>
+                    <span class='switch'></span>
+                </div>
+            </li>
+
+        </div>
+    </div>
+
+</nav>
+
+<script>
+        
+        const body = document.querySelector('body'),
+        sidebar = body.querySelector('nav'),
+        toggle = body.querySelector(".toggle"),
+        modeSwitch = body.querySelector(".toggle-switch"),
+        modeText = body.querySelector(".mode-text"),
+        workingSpace = body.querySelector("#working-space");
+        toggle.addEventListener("click" , () =>{
+            sidebar.classList.toggle("close");
+            if (workingSpace.classList.contains("padding-sidebar-open")){
+                workingSpace.classList.remove("padding-sidebar-open");
+            }
+            else {
+                workingSpace.classList.add("padding-sidebar-open");
+            }
+        })
+        modeSwitch.addEventListener("click" , () =>{
+            body.classList.toggle("dark");
+            
+            if(body.classList.contains("dark")){
+                modeText.innerText = "Light mode";
+            }else{
+                modeText.innerText = "Dark mode";
+                
+            }
+        });
+    </script> 

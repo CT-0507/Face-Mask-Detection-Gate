@@ -1,0 +1,29 @@
+<div>
+    <h4>Chào mừng các bạn đến với FaceMaskDetectionGate</h4>
+    <hr>
+    <h5>Thành viên 1: Trần Quốc Cường - 19521302</h5>
+    <h5>Thành viên 2: Đào Thanh Huy - 1952</h5>
+</div>
+<div class="device-list d-flex flex-wrap">
+    {{#each devices}}
+    <div class="card ml-4" style="width: 200px;">
+        <div class="container-fluid">
+            {{!-- Container for card --}}
+            <div class="row justify-content-md-center">
+                
+                <div class="card-body col-8 col">
+                    <p class="card-text">{{name}}</p>
+                    {{#if isAlive}}
+                    <span class="badge badge-success">Success</span>
+                    {{else}}
+                    <span class="badge badge-danger">Fail</span>
+                    {{/if}}
+                    <p>{{updatedAt}}<p>
+                </div>
+                <img class="card-img-top col-4 p-2" src="{{imgUrl}}" alt="Card image cap">
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+

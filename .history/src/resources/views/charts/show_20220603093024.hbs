@@ -1,0 +1,226 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-5 mr-5">
+            <div class="chart-container" style="width:600px;height:300px;background-color: rgba(21, 223, 179, 0.3);">
+                <canvas id="myChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="chart-container" style="width:600px;height:300px;background-color: rgba(234, 238, 237, 0.9);">
+                <canvas id="humiChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4 justify-content-center">
+        <div class="col-5 mr-5">
+            <div class="chart-container" style="width:600px;height:300px;background-color: rgba(174, 167, 98, 0.2);">
+                <canvas id="luxChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="chart-container" style="width:600px;height:300px;background-color: rgba(57, 56, 135, 0.2);">
+                <canvas id="soilHumiChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@2.0.0"></script>
+{{!-- <script type="module" src="/scripts/chartStreaming.js"></script> --}}
+<script>
+var chartData = {
+    temp: 0,
+    humid: 0,
+    lux: 0,
+    soilHumi: 0,
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    function getData() {
+    const url = 'http://{{{host}}}:3000/charts/get-data';
+    fetch(url)
+    .then((response) => {
+        return response.json();
+    })
+    .then((data) => {
+        chartData.temp = data.data.temp
+        chartData.humi = data.data.humi
+        chartData.lux = data.data.lux
+        chartData.soilHumi = data.data.soilHumi
+    })
+    }
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
+        data: {
+            
+        datasets: [{
+            label: 'Temperature',
+            data: [],              // empty at the beginning
+            backgroundColor: 'rgba(249, 217, 35, 1)',
+        }]
+        },
+        options: {
+        scales: {
+            y: {
+            min: 0,
+            max: 60,
+        },
+            x: {
+                type: 'realtime',   // x axis will auto-scroll from right to left
+                realtime: {         // per-axis options
+                duration: 20000,  // data in the past 20000 ms will be displayed
+                refresh: 5000,    // onRefresh callback will be called every 1000 ms
+                delay: 5000,      // delay of 5000 ms, so upcoming values are known before plotting a line
+                pause: false,     // chart is not paused
+                ttl: undefined,   // data will be automatically deleted as it disappears off the chart
+                frameRate: 30,    // data points are drawn 30 times every second
+                    
+                // a callback to update datasets
+                    
+                onRefresh: chart => {
+                // query your data source and get the array of {x: timestamp, y: value} objects
+                getData()
+                var data = { x: Date.now(), y: chartData.temp};
+                // append the new data array to the existing chart data
+                chart.data.datasets[0].data.push(data);
+                }
+                }
+            }
+        }
+    }
+    })
+    const humiCtx = document.getElementById('humiChart').getContext('2d');
+    const humiChart = new Chart(humiCtx, {
+    type: 'bar',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
+    data: {
+        datasets: [{
+        label: 'Humidity',
+        data: [],
+        backgroundColor: 'rgba(33, 85, 205, 1)',
+        borderWidth: 0.3,             // empty at the beginning
+        }],
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',   // x axis will auto-scroll from right to left
+                realtime: {         // per-axis options
+                duration: 20000,  // data in the past 20000 ms will be displayed
+                refresh: 5000,    // onRefresh callback will be called every 1000 ms
+                delay: 5000,      // delay of 1000 ms, so upcoming values are known before plotting a line
+                pause: false,     // chart is not paused
+                ttl: undefined,   // data will be automatically deleted as it disappears off the chart
+                frameRate: 30,    // data points are drawn 30 times every second
+
+                // a callback to update datasets
+                onRefresh: chart => {
+
+                    // query your data source and get the array of {x: timestamp, y: value} objects
+                    var data = { x: Date.now(), y: chartData.humi};
+                    // append the new data array to the existing chart data
+                    chart.data.datasets[0].data.push(data);
+                    }
+                }
+            },
+            y: {
+                    min: 0,
+                    max: 100,
+                },
+        },
+        responsive: true,
+    }
+    });
+
+    const soilhumiCtx = document.getElementById('soilHumiChart').getContext('2d');
+    const soilhumiChart = new Chart(soilhumiCtx, {
+    type: 'bar',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
+    data: {
+        datasets: [{
+        label: 'Soil Humidity',
+        data: [],
+        backgroundColor: 'rgba(191, 56, 135, 0.2)',
+        borderWidth: 0.3,             // empty at the beginning
+        }],
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',   // x axis will auto-scroll from right to left
+                realtime: {         // per-axis options
+                duration: 20000,  // data in the past 20000 ms will be displayed
+                refresh: 5000,    // onRefresh callback will be called every 1000 ms
+                delay: 5000,      // delay of 1000 ms, so upcoming values are known before plotting a line
+                pause: false,     // chart is not paused
+                ttl: undefined,   // data will be automatically deleted as it disappears off the chart
+                frameRate: 30,    // data points are drawn 30 times every second
+
+                // a callback to update datasets
+                onRefresh: chart => {
+
+                    // query your data source and get the array of {x: timestamp, y: value} objects
+                    var data = { x: Date.now(), y: chartData.soilHumi};
+                    // append the new data array to the existing chart data
+                    chart.data.datasets[0].data.push(data);
+                    }
+                }
+            },
+            y: {
+                    min: 0,
+                    max: 100,
+                },
+        },
+        responsive: true,
+    }
+    });
+    const luxCtx = document.getElementById('luxChart').getContext('2d');
+    const luxChart = new Chart(luxCtx, {
+    type: 'scatter',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
+    data: {
+        datasets: [{
+        label: 'Light',
+        data: [],
+        pointBackgroundColor: '#00FF00',
+        borderWidth: 0.3,             // empty at the beginning
+        }],
+
+
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',   // x axis will auto-scroll from right to left
+                realtime: {         // per-axis options
+                duration: 20000,  // data in the past 20000 ms will be displayed
+                refresh: 5000,    // onRefresh callback will be called every 1000 ms
+                delay: 5000,      // delay of 1000 ms, so upcoming values are known before plotting a line
+                pause: false,     // chart is not paused
+                ttl: undefined,   // data will be automatically deleted as it disappears off the chart
+                frameRate: 30,    // data points are drawn 30 times every second
+
+                // a callback to update datasets
+                onRefresh: chart => {
+                    console.log(chartData.lux)
+                    // query your data source and get the array of {x: timestamp, y: value} objects
+                    var data = { x: Date.now(), y: chartData.lux};
+                    // append the new data array to the existing chart data
+                    chart.data.datasets[0].data.push(data);
+                    }
+                }
+            },
+            y: {
+                    min: 0,
+                    max: 1000,
+                },
+        },
+        responsive: true,
+    }
+    });
+    
+})
+
+</script>
