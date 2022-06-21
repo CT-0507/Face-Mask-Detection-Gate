@@ -120,5 +120,5 @@ const upload = multer({ storage: storage });
 // Start listening
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-    console.log(`App listening on port ${host}:${port}`);
+    console.log(`App listening on port http://localhost:${port}`);
 });

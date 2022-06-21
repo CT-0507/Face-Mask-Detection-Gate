@@ -7,16 +7,15 @@ class RefreshController {
         // Tạo filter tìm kiếm dựa trên các trường
         const filter = { _id: _id };
         console.log(`The _id you are query is: ${_id}`);
-
         // Code này sẽ chạy bất đồng bộ
         // {new: true}, trả về document SAU khi đã update dữ liệu,
         // {new: false}, trả về document TRC khi đã update dữ liệu, nghĩa là t thấy bản cũ của document
-        Device.findOneAndUpdate(
-            filter,
+        Device
+        .findOneAndUpdate( 
+            filter, 
             { updatedAt: () => Date.now() },
             { new: true },
-        )
-            .then((result) => {
+            ).then((result) => {
                 console.log(result); // hiện thị document
                 res.status(200).send(result);
             })
