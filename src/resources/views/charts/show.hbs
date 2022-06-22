@@ -1,39 +1,18 @@
 <div class='container-fluid'>
     <div class='row justify-content-center'>
-        <div class='col-5 mr-5'>
-            <div
-                class='chart-container'
-                style='width:600px;height:300px;background-color: rgba(21, 223, 179, 0.3);'
-            >
-                <canvas id='myChart' width='600' height='300'></canvas>
+        <div class='col col-5 mr-5'>
+            <div class='chart-container' style='width:300px;height:300px;background-color: rgba(255, 255, 255, 0.3);'>
+                <canvas id='Ratio-Chart' width='300' height='300'></canvas>
             </div>
         </div>
-        <div class='col-5'>
-            <div
-                class='chart-container'
-                style='width:600px;height:300px;background-color: rgba(234, 238, 237, 0.9);'
-            >
-                <canvas id='humiChart' width='600' height='300'></canvas>
+        <div class="col col-5 mr-5">
+            <div class='chart-container' style='width:600px;height:300px;background-color: rgba(21, 223, 179, 0.3);'>
+                <canvas id='Statics-Chart' width='600' height='300'></canvas>
             </div>
         </div>
     </div>
     <div class='row mt-4 justify-content-center'>
-        <div class='col-5 mr-5'>
-            <div
-                class='chart-container'
-                style='width:600px;height:300px;background-color: rgba(174, 167, 98, 0.2);'
-            >
-                <canvas id='luxChart' width='600' height='300'></canvas>
-            </div>
-        </div>
-        <div class='col-5'>
-            <div
-                class='chart-container'
-                style='width:600px;height:300px;background-color: rgba(57, 56, 135, 0.2);'
-            >
-                <canvas id='soilHumiChart' width='600' height='300'></canvas>
-            </div>
-        </div>
+
     </div>
 </div>
 
@@ -105,14 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then((data) => {
-           // chartData.temp = data.data.temp;
-           // chartData.humid = data.data.humi;
-           // chartData.lux = data.data.lux;
             chartData.soilHumi = data.data.soilHumi;
-            //chartData.tempCreatedAt = data.data.tempCreatedAt;
-            //chartData.humiCreatedAt = data.data.humiCreatedAt;
             chartData.soilCreatedAt = data.data.soilCreatedAt;
-            //chartData.luxCreatedAt = data.data.luxCreatedAt;
             console.log(chartData)
         })
         .catch(() => {
@@ -120,36 +93,31 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     }
 
-    const ctx = document.getElementById('myChart').getContext('2d');
+    // Face mask / no face mask Ratio chart
+    const ctx = document.getElementById('Ratio-Chart').getContext('2d');
     const myChart = new Chart(ctx, {
-        type: 'line',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
-        data: { 
+        type: 'pie',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
+        data: {
+            labels: ['Have Mask', 'No Mask'],
             datasets: [{
-                label: 'Temperature',
-                data: [],              // empty at the beginning
-                backgroundColor: 'rgba(249, 217, 35, 1)',
+                label: 'Face Mask Ratio',
+                data: [300, 10],              // empty at the beginning
+                backgroundColor: ['rgba(249, 217, 35, 1)','rgb(54, 162, 235)',],
+                hoverOffset: 4
             }]
         },
-        options: {
-        scales: {
-                    y: {
-                    min: 0,
-                    max: 100,
-                },
-            }
-        }
     })
   
-    
-    const humiCtx = document.getElementById('humiChart').getContext('2d');
-    const humiChart = new Chart(humiCtx, {
+    // In Out charts
+    const InOutCtx = document.getElementById('Statics-Chart').getContext('2d');
+    const InOutChart = new Chart(InOutCtx, {
         type: 'bar',       
         data: {
             datasets: [{
-                label: 'Humidity',
-                data: [],
-                backgroundColor: 'rgba(33, 85, 205, 1)',
-            borderWidth: 0.3,             // empty at the beginning
+                label: 'In/Out',
+                data: [3, 5, 6],
+                backgroundColor: ['rgba(33, 85, 205, 1)','rgba(39, 85, 22, 1)',],
+                borderWidth: 0.3,             // empty at the beginning
             }],
         },
         options: {
@@ -206,29 +174,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     max: 100,
                 },
         },
-        responsive: true,
-    }
-    });
-
-
-    const luxCtx = document.getElementById('luxChart').getContext('2d');
-    const luxChart = new Chart(luxCtx, {
-        type: 'line',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
-        data: {
-            datasets: [{
-                label: 'Light',
-                data: [],
-                pointBackgroundColor: '#00FF00',
-                borderWidth: 0.3,             // empty at the beginning
-            }],
-        },
-        options: {
-            scales: {
-                y: {
-                    min: 0,
-                    max: 1000,
-                },
-            },
         responsive: true,
     }
     });

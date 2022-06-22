@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Device = require('../../models/devices.js');
-const Log = require('../../models/log.js');
 const Person = require('../../models/person')
 const _io = require('../../index').io;
 

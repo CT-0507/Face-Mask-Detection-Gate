@@ -1,7 +1,4 @@
 const mongoose = require('mongoose');
-const DHT = require('../../models/dht.js');
-const BH = require('../../models/bh.js');
-const SL = require('../../models/soil.js');
 let host = '172.31.250.62';
 var session;
 class ChartsController {
