@@ -11,19 +11,52 @@ import cv2
 import json
 import serial
 import threading
+import socket
 import time
 from flask import Flask, render_template, Response
 
 url = 'http://localhost:5000/single'
+updateDeviceApi = 'http://localhost:3000/update/device'
+refreshDeviceApi = 'http://localhost:3000/refresh'
+deviceIP = None
+deviceID = None
+refreshDelay = 180 # 3 phut
+
+def get_current_ip():
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    return IPAddr
+
 def start_thread(func, args):
-    p = threading.Thread(target= func, args = args)
+    p = threading.Thread(target= func, args = args, daemon=True)
     p.start()
 
-def create_packet(img):
+def register_device(api):
+    r = requests.post(url = api, json = {'name': 'Jetson Nano', 'ip':deviceIP})
+    print(f'Register result: {r}')
+    return r.text
+
+def refresh_device(url, deviceId, delay):
+    last_refresh = time.time()
+    while True:
+        if time.time() - last_refresh > delay:
+            print(f'Refresh device after {delay} seconds')
+            r = requests.patch(url= url, json = {'_id': deviceId})
+            if r.status_code == 200:
+                print('Refresh successful.')
+            last_refresh = time.time()
+
+
+def create_packet(img, withMask):
     img_encoded = cv2.imencode('.jpg', img)[1]
     name_img = 'img_' + str(round(time.time()))
+    deviceId = ""
     multipart_form_data = {
         'image': (name_img, img_encoded.tobytes()),
+        'name':(None, 'Jetson Nano'),
+        'ip':(None, '192.168.0.0'), # Viết code tìm ip thiết bị
+        'withMask':(None, withMask),
+        'attachTo': deviceId, # Viết 
     }
     return multipart_form_data
 
@@ -234,11 +267,11 @@ def read_data(ser, arduinoOutput, records):
             jsonData = arduinoOutput.get()
             if jsonData['isOpen'] == '1':
                 print('Send img mask')
-                data = create_packet(records['mask'])
+                data = create_packet(records['mask'], withMask=True)
                 start_thread(send_img_request, (url, data))
             else:
                 print('Send img no mask')  
-                data = create_packet(records['noMask'])# gửi hình ảnh người ko đeo khẩu trang
+                data = create_packet(records['noMask'], withMask=False)# gửi hình ảnh người ko đeo khẩu trang
                 start_thread(send_img_request, (url, data))
              
             
@@ -263,6 +296,12 @@ if __name__ == '__main__':
     manager = multiprocessing.Manager()
     records = manager.dict({'mask':'', 'noMask':''})
     
+    deviceIP = get_current_ip()
+    print(f'Device IP is {deviceIP}')
+    deviceID = register_device(updateDeviceApi)
+    print(f'Device ID is {deviceID}')
+    start_thread(refresh_device, (refreshDeviceApi, deviceID, refreshDelay))
+
 
     print('Kết nối Arduino')
     #ser = serial.Serial('COM11', 9600, timeout = 1)
