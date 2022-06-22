@@ -4,11 +4,18 @@ var session;
 class LoginController {
     // POST led 1
     index(req, res, next) {
-        var title = "Login";
-        res.render('login/show', { 
-            layout: false, 
-            title: title 
-        });
+        session = req.session;
+        if (session.userid) {
+            res.redirect('/dashboard');
+            
+        }
+        else {
+            var title = "Login";
+            res.render('login/show', { 
+                layout: false, 
+                title: title 
+            });
+        }
     }
 
     login(req, res, next) {

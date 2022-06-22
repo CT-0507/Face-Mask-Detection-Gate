@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 let host = '172.31.250.62';
+const EnterLogs = require('../../models/enterLog.js');
 var session;
 class ChartsController {
     // GET /
@@ -10,14 +11,8 @@ class ChartsController {
             try {
                 var data;
                 try {
-                    const dht = await DHT.findOne().sort({ updatedAt: -1 });
-                    const bh = await BH.findOne().sort({ updatedAt: -1 });
-                    const sl = await SL.findOne().sort({ updatedAt: -1 });
+                    
                     data = {
-                        temp: dht.temp,
-                        humi: dht.humi,
-                        lux: bh.lux,
-                        soilHumi: sl.soilHumi,
                     };
                 }
                 catch(err){

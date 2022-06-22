@@ -34,9 +34,6 @@ class UpdateController {
             })
     }
 
-
-   
-
 }
 
 module.exports = new UpdateController();

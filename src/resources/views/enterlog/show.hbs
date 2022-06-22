@@ -93,15 +93,15 @@
     <div class="row justify-content-center">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
-                <li class="page-item" id="btn-previous"><a class="page-link" href="/logs?page={{{sum current -1}}}">Previous</a></li>
-                <li class="page-item" id="btn-1"><a class="page-link" href="/logs?page=1">1</a></li>
+                <li class="page-item" id="btn-previous"><a class="page-link" href="/enterlogs?page={{{sum current -1}}}">Previous</a></li>
+                <li class="page-item" id="btn-1"><a class="page-link" href="/enterlogs?page=1">1</a></li>
                 <p id="more" style="margin: 0 4px">    ...    </p>
-                <li class="page-item" id="btn-first"><a class="page-link" href="/logs?page={{current}}">{{{current}}}</a></li>
-                <li class="page-item"><a class="page-link" id="btn-next-2" href="/logs?page={{{sum current 1}}}">{{{sum current 1}}}</a></li>
-                <li class="page-item"><a class="page-link" id="btn-next-3" href="/logs?page={{{sum current 2}}}">{{{sum current 2}}}</a></li>
+                <li class="page-item" id="btn-first"><a class="page-link" href="/enterlogs?page={{current}}">{{{current}}}</a></li>
+                <li class="page-item"><a class="page-link" id="btn-next-2" href="/enterlogs?page={{{sum current 1}}}">{{{sum current 1}}}</a></li>
+                <li class="page-item"><a class="page-link" id="btn-next-3" href="/enterlogs?page={{{sum current 2}}}">{{{sum current 2}}}</a></li>
                 <p id="more-to-last" style="margin: 0 4px">    ...    </p>
-                <li class="page-item" id="btn-last"><a class="page-link" href="/logs?page={{pages}}">{{pages}}</a></li>
-                <li class="page-item" id="btn-next"><a class="page-link" href="/logs?page={{{sum current 1}}}">Next</a></li>
+                <li class="page-item" id="btn-last"><a class="page-link" href="/enterlogs?page={{pages}}">{{pages}}</a></li>
+                <li class="page-item" id="btn-next"><a class="page-link" href="/enterlogs?page={{{sum current 1}}}">Next</a></li>
             </ul>
         </nav>
     </div>

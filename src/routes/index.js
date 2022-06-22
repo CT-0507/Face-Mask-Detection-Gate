@@ -15,7 +15,7 @@ function route(app) {
     app.use('/main', mainRouter);
     app.use('/charts', chartsRouter);
     app.use('/manual', manualRouter);
-    app.use('/enterlog', enterLogRouter);
+    app.use('/enterlogs', enterLogRouter);
     app.use('/', loginRouter);
 }
 
