@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: ['Have Mask', 'No Mask'],
             datasets: [{
                 label: 'Face Mask Ratio',
-                data: [300, 10],              // empty at the beginning
+                data: [{{{ChartsData.withMask}}}, {{{ChartsData.noMask}}}],              // empty at the beginning
                 backgroundColor: ['rgba(249, 217, 35, 1)','rgb(54, 162, 235)',],
                 hoverOffset: 4
             }]

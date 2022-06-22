@@ -8,17 +8,41 @@ class ChartsController {
         session = req.session;
         if (session.userid) {
             var title = 'Charts';
+            var withMask = 0;
+            var noMask = 0;
+            const data = [];
+            var ChartsData;
             try {
-                var data;
+                var today = new Date();
+                var date = today.getMonth() + '/' + today.getDate() + '/' + today.getFullYear();
+                console.log(date)
                 try {
-                    
-                    data = {
-                    };
+                    var Logs = await EnterLogs.find({}, function (err, results) {
+                        if (err) throw 'wrong';
+                        var d = results.createdAt;
+                        if(d.toLocaleDateString() == date){
+                            results.forEach(() => {
+                                data.push({
+                                    withMask: results.withMask,
+                                })
+                            })
+                        }
+                    });
+                    data.forEach((result) => {
+                        if(result.withMask) {
+                            withMask++;
+                        } else noMask++;
+                    })
+                    ChartsData = {
+                        withMask: withMask,
+                        noMask: noMask,
+                    }
+                    console.log(ChartsData);
                 }
                 catch(err){
                     console.log(err);
                 }
-                res.render('charts/show', { data: data, title: title, host: host });
+                res.render('charts/show', { ChartsData: ChartsData, title: title, host: host });
             }
             catch (err) {
                 res.status(404).send({
