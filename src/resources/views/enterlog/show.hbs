@@ -1,7 +1,7 @@
 <h1>To Upload Image on mongoDB</h1>
     <hr>
     <div>
-        <form action="/enterlog/upload" method="POST" enctype="multipart/form-data">
+        <form action="/enterlogs/upload" method="POST" enctype="multipart/form-data">
             <div>
                 <label for="name">Image Title</label>
                 <input type="text" id="name" placeholder="Name" 
@@ -48,7 +48,7 @@
         <h3>Enter Logs</h3>
         <button class="btn btn-sm btn-primary mt-4" id="btn-delete-all">Delete All</button>
         <div class="mt-4 d-flex align-items-center">
-            <form method="GET" action='/enterlog/filter'>
+            <form method="GET" action='/enterlogs/filter'>
                 <input type="text" class="form-control-sm mr-4" name="q" id="input-filter" class="mt-4" placeholder="Enter your filter here" required>
                 <button class="btn btn-sm btn-primary btn-apply mt-4" id="btn-apply" >Apply</button>
             </form>
@@ -77,7 +77,7 @@
                     <td>{{createdAt}}</td>
                     <td>
                     <a href="" class="btn btn-link" data-toggle="modal" data-id="{{_id}}" data-target="#delete-log-modal">Remove</a>
-                    <a href="/enterlog/detail/{{_id}}" class="btn btn-link" data-id="{{_id}}">Detail</a>
+                    <a href="/enterlogs/detail/{{_id}}" class="btn btn-link" data-id="{{_id}}">Detail</a>
                     </td>
                 </tr>
                 {{else}}
@@ -156,11 +156,11 @@
             logId = button.data('id') // Extract info from data-* attributes
         });
         btnDeleteAll.onclick = function () {
-            deleteAllForm.action = '/enterlog/delete-all-log?_method=DELETE';
+            deleteAllForm.action = '/enterlogs/delete-all-log?_method=DELETE';
             deleteAllForm.submit();
         };
         btnDeleteLog.onclick = function () {
-            deleteForm.action = '/enterlog/' + logId + '?_method=DELETE';
+            deleteForm.action = '/enterlogs/' + logId + '?_method=DELETE';
             deleteForm.submit();
         };
         

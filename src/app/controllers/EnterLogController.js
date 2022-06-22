@@ -27,7 +27,7 @@ class EnterLogController {
                 });
             } else {
                 console.log(result);
-                res.redirect('/enterlog/');
+                res.redirect('/enterlogs/');
             }
         });
     }
@@ -46,10 +46,11 @@ class EnterLogController {
                         attachTo: item.attachTo,
                         ip: item.ip,
                         name: item.name,
+                        withMask: item.withMask,
                         img: item.img,
                         createdAt: item.createdAt.toLocaleDateString(),
                     };
-                    //console.log(newItem);
+                    // console.log(newItem);
                     res.render('enterlog/detail', {
                         items: newItem,
                         title: title,
@@ -126,10 +127,10 @@ class EnterLogController {
         console.log("I'm here");
         EnterLogs.create(obj, (err, item) => {
             if (err) {
-                console.log(err);
+                res.status(400).send({message: "Upload person FAIL", error: err})
             } else {
                 // item.save();
-                res.redirect('/enterlog');
+                res.status(200).send({message: "Upload person OK"})
             }
         });
     }
