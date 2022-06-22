@@ -16,7 +16,7 @@
 <body>
     
     <div class="app vh-100">
-        <div class="alert hide" style="display:none;">
+        <div class="alert hide">
             <span class="fas fa-exclamation-circle"></span>
             <span class="msg">Phát hiện xâm nhập trái phép</span>
             <div class="close-btn">
@@ -48,18 +48,18 @@
     <script src='/socket.io/socket.io.js'></script>
     <script>
         $('.close-btn').click(function(){
-           $('.alert').removeClass("show");
+          // $('.alert').removeClass("show");
            $('.alert').addClass("hide");
         });
 
         var socket  = io();
         socket.on('alert', data => {
             console.log('Alert from server')
-            $('.alert').addClass("show");
+            //$('.alert').addClass("show");
             $('.alert').removeClass("hide");
             $('.alert').addClass("showAlert");
             setTimeout(function(){
-                $('.alert').removeClass("show");
+               // $('.alert').removeClass("show");
                 $('.alert').addClass("hide");
             },5000);
 

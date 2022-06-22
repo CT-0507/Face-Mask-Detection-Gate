@@ -15,11 +15,9 @@ import socket
 import time
 from flask import Flask, render_template, Response
 
-url = 'http://localhost:5000/single'
+enterlogApi = 'http://localhost:3000/enterlogs/upload'
 updateDeviceApi = 'http://localhost:3000/update/device'
 refreshDeviceApi = 'http://localhost:3000/refresh'
-deviceIP = None
-deviceID = None
 refreshDelay = 180 # 3 phut
 
 def get_current_ip():
@@ -47,16 +45,16 @@ def refresh_device(url, deviceId, delay):
             last_refresh = time.time()
 
 
-def create_packet(img, withMask):
+def create_packet(img, info, withMask):
     img_encoded = cv2.imencode('.jpg', img)[1]
     name_img = 'img_' + str(round(time.time()))
-    deviceId = ""
+    mask = 'true' if withMask else 'false' # JS lỗi parsing True, False
     multipart_form_data = {
         'image': (name_img, img_encoded.tobytes()),
         'name':(None, 'Jetson Nano'),
-        'ip':(None, '192.168.0.0'), # Viết code tìm ip thiết bị
-        'withMask':(None, withMask),
-        'attachTo': deviceId, # Viết 
+        'ip':(None, info['ip']), # Viết code tìm ip thiết bị
+        'withMask':(None, mask),
+        'attachTo': (None, info['id']), # Viết 
     }
     return multipart_form_data
 
@@ -254,7 +252,7 @@ def send_data(ser, arduinoInput):
             print(input)
             ser.write(str.encode(input))
 
-def read_data(ser, arduinoOutput, records):
+def read_data(ser, arduinoOutput, records, info):
     while True:
         if ser.inWaiting():
             data = ser.readline().decode('utf-8')
@@ -267,12 +265,12 @@ def read_data(ser, arduinoOutput, records):
             jsonData = arduinoOutput.get()
             if jsonData['isOpen'] == '1':
                 print('Send img mask')
-                data = create_packet(records['mask'], withMask=True)
-                start_thread(send_img_request, (url, data))
+                data = create_packet(records['mask'], info, withMask=True)
+                start_thread(send_img_request, (enterlogApi, data))
             else:
                 print('Send img no mask')  
-                data = create_packet(records['noMask'], withMask=False)# gửi hình ảnh người ko đeo khẩu trang
-                start_thread(send_img_request, (url, data))
+                data = create_packet(records['noMask'],info ,withMask=False)# gửi hình ảnh người ko đeo khẩu trang
+                start_thread(send_img_request, (enterlogApi, data))
              
             
 def get_frame(streamFrames):
@@ -295,22 +293,23 @@ if __name__ == '__main__':
 
     manager = multiprocessing.Manager()
     records = manager.dict({'mask':'', 'noMask':''})
-    
+
     deviceIP = get_current_ip()
     print(f'Device IP is {deviceIP}')
     deviceID = register_device(updateDeviceApi)
     print(f'Device ID is {deviceID}')
     start_thread(refresh_device, (refreshDeviceApi, deviceID, refreshDelay))
+    info = {'ip': deviceIP, 'id': deviceID}
 
 
     print('Kết nối Arduino')
-    #ser = serial.Serial('COM11', 9600, timeout = 1)
-    #time.sleep(1)
+    ser = serial.Serial('COM12', 9600, timeout = 1)
+    time.sleep(1)
     
-    #t1 = threading.Thread(target= send_data, args = [ser, arduinoInput], daemon= True)
-    #t1.start()
-    #t2 = threading.Thread(target= read_data, args = [ser, arduinoOutput, records], daemon= True)
-    #t2.start()
+    t1 = threading.Thread(target= send_data, args = [ser, arduinoInput], daemon= True)
+    t1.start()
+    t2 = threading.Thread(target= read_data, args = [ser, arduinoOutput, records, info], daemon= True)
+    t2.start()
 
     p2 = multiprocessing.Process(target = video_capture, args = (frameQueue, ))
     p2.start()
@@ -322,7 +321,7 @@ if __name__ == '__main__':
     def vid():
         return Response(get_frame(streamFrames),mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    app.run(host='0.0.0.0',port=5000, debug=False, threaded=True)
+    app.run(host=deviceIP,port=5000, debug=False, threaded=True)
 
     p2.join()
     p1.terminate()

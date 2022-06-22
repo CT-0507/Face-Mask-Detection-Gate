@@ -11,23 +11,55 @@ import cv2
 import json
 import serial
 import threading
+import socket
 import time
 import requests
 from flask import Flask, render_template, Response
 
 
-url = 'http://localhost:5000/single'
+enterlogApi = 'http://localhost:3000/enterlogs/upload'
+updateDeviceApi = 'http://localhost:3000/update/device'
+refreshDeviceApi = 'http://localhost:3000/refresh'
+deviceIP = None
+deviceID = None
+refreshDelay = 180 # 3 phut
+
+def get_current_ip():
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    return IPAddr
 
 # Khởi động môt thread
 def start_thread(func, args):
-    p = threading.Thread(target= func, args = args)
+    p = threading.Thread(target= func, args = args, daemon=True)
     p.start()
 
-def create_packet(img):
+def register_device(api):
+    r = requests.post(url = api, json = {'name': 'Jetson Nano', 'ip':deviceIP})
+    print(f'Register result: {r}')
+    return r.text
+
+def refresh_device(url, deviceId, delay):
+    last_refresh = time.time()
+    while True:
+        if time.time() - last_refresh > delay:
+            print(f'Refresh device after {delay} seconds')
+            r = requests.patch(url= url, json = {'_id': deviceId})
+            if r.status_code == 200:
+                print('Refresh successful.')
+            last_refresh = time.time()
+
+
+def create_packet(img, info, withMask):
     img_encoded = cv2.imencode('.jpg', img)[1]
-    name_img = 'img_' + str(round(time.time())) +'.jpg'
+    name_img = 'img_' + str(round(time.time()))
+    mask = 'true' if withMask else 'false' # JS lỗi parsing True, False
     multipart_form_data = {
         'image': (name_img, img_encoded.tobytes()),
+        'name':(None, 'Jetson Nano'),
+        'ip':(None, info['ip']), # Viết code tìm ip thiết bị
+        'withMask':(None, mask),
+        'attachTo': (None, info['id']), # Viết 
     }
     return multipart_form_data
 
@@ -148,7 +180,7 @@ def generate_frame(frameQueue, arduinoInput, streamFrames, records):
     
     print('Start gstreamer')
     cap = cv2.VideoCapture(gstreamer_pipline(), cv2.CAP_GSTREAMER)
-    #cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)
     print('Starting capture...')
     time.sleep(2)
     
@@ -243,7 +275,7 @@ def send_data(ser, arduinoInput):
             print(input)
             ser.write(str.encode(input))
 
-def read_data(ser, arduinoOutput, records):
+def read_data(ser, arduinoOutput, records, info):
     while True:
         if ser.inWaiting(): # Nếu có dữ liệu 
             data = ser.readline().decode('utf-8') # Biến đổi dữ liệu từ binary -> string
@@ -256,13 +288,12 @@ def read_data(ser, arduinoOutput, records):
             jsonData = arduinoOutput.get() # Lấy dữ liệu 
             if jsonData['isOpen'] == '1': # Nếu cửa mở
                 print('Send img mask')
-                data = create_packet(records['mask']) # Gửi hình ảnh người deo khẩu trang
-                start_thread(send_img_request, (url, data))
+                data = create_packet(records['mask'], info, withMask=True)
+                start_thread(send_img_request, (enterlogApi, data))
             else: # Nếu cửa đóng
                 print('Send img no mask')  
-                data = create_packet(records['noMask'])# gửi hình ảnh người ko đeo khẩu trang
-                start_thread(send_img_request, (url, data))
-
+                data = create_packet(records['noMask'],info ,withMask=False)# gửi hình ảnh người ko đeo khẩu trang
+                start_thread(send_img_request, (enterlogApi, data))
            
 def get_frame(streamFrames):
     while True:
@@ -282,20 +313,30 @@ if __name__ == '__main__':
     arduinoOutput = multiprocessing.Queue() # read this from arduino
     arduinoInput = multiprocessing.Queue() # send this to arduino
     
-
     manager = multiprocessing.Manager()
     records = manager.dict({'mask':'', 'noMask':''})
+
+    
+    deviceIP = get_current_ip()
+    print(f'Device IP is {deviceIP}')
+    deviceID = register_device(updateDeviceApi)
+    print(f'Device ID is {deviceID}')
+    start_thread(refresh_device, (refreshDeviceApi, deviceID, refreshDelay))
+    info = {'ip': deviceIP, 'id': deviceID}
 
     # print('Kết nối Arduino')
     # ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
     # time.sleep(1)
     
+    print('Kết nối Arduino')
+    ser = serial.Serial('COM12', 9600, timeout = 1)
+    time.sleep(1)
     
-    # t1 = threading.Thread(target= send_data, args = [ser, arduinoInput], daemon= True)
-    # t1.start()
-
-    # t2 = threading.Thread(target= read_data, args = [ser, arduinoOutput, records], daemon= True)
-    # t2.start()
+    
+    t1 = threading.Thread(target= send_data, args = [ser, arduinoInput], daemon= True)
+    t1.start()
+    t2 = threading.Thread(target= read_data, args = [ser, arduinoOutput, records, info], daemon= True)
+    t2.start()
 
     p2 = multiprocessing.Process(target = video_capture, args = (frameQueue, ))
     p2.start()
@@ -307,7 +348,7 @@ if __name__ == '__main__':
     def vid():
         return Response(get_frame(streamFrames),mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    app.run(host='0.0.0.0',port=5000, debug=False, threaded=True)
+    app.run(host=deviceIP,port=5000, debug=False, threaded=True)
     
     p2.join()
     p1.terminate()

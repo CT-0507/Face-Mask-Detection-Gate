@@ -127,14 +127,17 @@ class EnterLogController {
                 contentType: 'image/png',
             },
         };
+        console.log(obj)
 
-        if (req.body.withMask != true){
+        if (req.body.withMask != 'true'){
+            console.log('Send alert')
             _io.emit('alert', true);
         }
 
         console.log("I'm here");
         EnterLogs.create(obj, (err, item) => {
             if (err) {
+                console.log(err)
                 res.status(400).send({message: "Upload person FAIL", error: err})
             } else {
                 // item.save();

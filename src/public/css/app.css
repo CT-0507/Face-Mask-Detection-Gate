@@ -518,6 +518,7 @@ input:checked + .slider:before {
     overflow: hidden;
     opacity: 0;
     pointer-events: none;
+    z-index: 120;
   }
   .alert.showAlert{
     opacity: 1;
@@ -542,6 +543,8 @@ input:checked + .slider:before {
   }
   .alert.hide{
     animation: hide_slide 1s ease forwards;
+    display: none;
+
   }
   @keyframes hide_slide {
     0%{

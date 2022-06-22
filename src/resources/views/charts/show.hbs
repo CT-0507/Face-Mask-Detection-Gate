@@ -33,7 +33,19 @@ var chartData = {
     soilCreatedAt: Date.now(),
 };
 document.addEventListener('DOMContentLoaded', function() {
-    var socket = io(); // connect to socket server
+    /* var socket = io(); 
+     // Tạo socket lắng nghe sự kiện 'sendDht' đc gửi từ server kèm theo data
+    socket.on('sendDht', data => {
+        console.log(data)
+        console.log(data.createdAt)
+        var time = new Date(data.createdAt)
+        time = time.toTimeString().split(' ')[0]
+        console.log(time)
+        addTemperature(myChart, time, data.temp)
+        addHumidity(humiChart, time, data.humi)
+    })
+    */
+    
 
     // Cập nhật nhiệt độ theo thời gian thực
     function addTemperature(chart, label, temp){
@@ -132,16 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Tạo socket lắng nghe sự kiện 'sendDht' đc gửi từ server kèm theo data
-    socket.on('sendDht', data => {
-        console.log(data)
-        console.log(data.createdAt)
-        var time = new Date(data.createdAt)
-        time = time.toTimeString().split(' ')[0]
-        console.log(time)
-        addTemperature(myChart, time, data.temp)
-        addHumidity(humiChart, time, data.humi)
-    })
-    
+   
 })
 </script>
