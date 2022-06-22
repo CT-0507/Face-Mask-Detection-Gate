@@ -14,16 +14,17 @@
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-    <div class="alert hide">
-         <span class="fas fa-exclamation-circle"></span>
-         <span class="msg">Phát hiện xâm nhập trái phép</span>
-         <div class="close-btn">
-            <span class="fas fa-times"></span>
-         </div>
-    </div>
+    
     <div class="app vh-100">
+       
         <div class="container-fluid p-0 m-0">
-            
+            <div class="alert hide">
+                <span class="fas fa-exclamation-circle"></span>
+                <span class="msg">Phát hiện xâm nhập trái phép</span>
+                <div class="close-btn">
+                    <span class="fas fa-times"></span>
+                </div>
+            </div>
             <div class="col col-auto padding-sidebar-close" id="working-space">
                 <div >
                     {{{body}}}
@@ -44,8 +45,8 @@
            $('.alert').removeClass("show");
            $('.alert').addClass("hide");
         });
+
         var socket  = io();
-        
         socket.on('alert', data => {
             console.log('Alert from server')
             $('.alert').addClass("show");

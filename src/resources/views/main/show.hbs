@@ -6,41 +6,7 @@
     src='https://unpkg.com/chartjs-plugin-datalabels@0.7.0/dist/chartjs-plugin-datalabels.js'
 ></script>
 <div class='container-fluid mt-5'>
-    <div class='row justify-content-center'>
-        <div id='canvas-holder' style='width:30%;;margin-right:20px;'>
-            <canvas id='temp-chart' width='600' height='300'></canvas>
-        </div>
-        <div id='canvas-holder' style='width:30%;'>
-            <canvas id='humi-chart' width='600' height='300'></canvas>
-        </div>
-    </div>
-    <div class='row justify-content-center' style='margin-top:40px'>
-        <div id='canvas-holder' style='width:30%;;margin-right:20px;'>
-            <canvas id='light-chart' width='600' height='300'></canvas>
-        </div>
-        <div id='canvas-holder' style='width:30%'>
-            <canvas id='soil-humi-chart'></canvas>
-        </div>
-    </div>
-    <p
-    >----------------------------------------------------------------------------------------------------------------------------------------------</p>
-    <h3>Manual control</h3>
-    <div class="row justify-content-center">
-        <div class="col col-3 d-flex">
-            <p class= "">Door</p>
-            <label class="switch">
-                <input type="checkbox" id="pump">
-                <span class="slider round"></span>
-            </label>
-        </div>
-        <div class="col col-3 d-flex">
-            <p class= "">Light</p>
-            <label class="switch">
-                <input type="checkbox" id="bulb">
-                <span class="slider round"></span>
-            </label>
-        </div>
-    </div>
+    <img src="http://192.168.36.86:5000/vid" alt="live stream"></img>
 </div>
 
 {{! <div id="canvas-holder" style="width:50%;height:200px">
