@@ -178,14 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     });
 
-     socket.on('sendBh', data => {
-        console.log(data)
-        console.log(data.createdAt)
-        var time = new Date(data.createdAt)
-        time = time.toTimeString().split(' ')[0]
-        console.log(time)
-        addLight(luxChart, time, data.lux)
-    })
+     
 
     
 })
