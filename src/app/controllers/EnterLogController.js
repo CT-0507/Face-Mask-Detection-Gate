@@ -15,6 +15,7 @@ class EnterLogController {
             .then(() => res.redirect('back'))
             .catch(next);
     }
+
     // [DELETE] enterlog/delete-all
     destroyAll(req, res, next) {
         console.log('Im at delete all');
@@ -109,6 +110,7 @@ class EnterLogController {
             name: req.body.name,
             attachTo: req.body.attachTo,
             ip: req.body.ip || '172.0.0.0',
+            withMask: req.body.withMask,
             img: {
                 data: fs.readFileSync(
                     path.join(

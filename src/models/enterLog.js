@@ -8,6 +8,7 @@ const enterLogSchema = new Schema(
             type: mongoose.Types.ObjectId,
             ref: 'Devices',
         },
+        withMask: {type: Boolean, required: true},
         ip: { type: String, required: true },
         name: { type: String, required: true },
         img: {
