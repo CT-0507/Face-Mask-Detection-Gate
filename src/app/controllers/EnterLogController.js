@@ -3,10 +3,13 @@ const User = require('../../models/user.js');
 const EnterLogs = require('../../models/enterLog.js');
 const fs = require('fs');
 const path = require('path');
+const _io = require('../../index').io;
+
 const {
     mongooseToObject,
     multipleMongooseToObject,
 } = require('../../util/mongoose');
+
 var session;
 class EnterLogController {
     // [DELETE] delete enterlog
@@ -124,6 +127,11 @@ class EnterLogController {
                 contentType: 'image/png',
             },
         };
+
+        if (req.body.withMask != true){
+            _io.emit('alert', true);
+        }
+
         console.log("I'm here");
         EnterLogs.create(obj, (err, item) => {
             if (err) {
