@@ -106,19 +106,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 hoverOffset: 4
             }]
         },
-    })
-  
+    });
+
     // In Out charts
     const InOutCtx = document.getElementById('Statics-Chart').getContext('2d');
     const InOutChart = new Chart(InOutCtx, {
-        type: 'bar',       
         data: {
             datasets: [{
+                type: 'bar',
                 label: 'Total',
-                data: [3, 5, 6],
-                backgroundColor: ['rgba(33, 85, 205, 1)','rgba(39, 85, 22, 1)',],
-                borderWidth: 0.3,             // empty at the beginning
+                data: [{{{daysData.firstday.total}}}, {{{daysData.secondday.total}}}, {{{daysData.thirdday.total}}}, {{{daysData.fourthday.total}}}],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            }, {
+                type: 'bar',
+                label: 'No mask',
+                data: [{{{daysData.firstday.noMask}}}, {{{daysData.secondday.noMask}}}, {{{daysData.thirdday.noMask}}}, {{{daysData.fourthday.noMask}}}],
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            },{
+                type: 'bar',
+                label: 'With Mask',
+                data: [{{{daysData.firstday.withMask}}}, {{{daysData.secondday.withMask}}}, {{{daysData.thirdday.withMask}}}, {{{daysData.fourthday.withMask}}}],
+                backgroundColor: 'rgba(255, 205, 86, 0.2)',
             }],
+            labels: ['{{daysData.firstday.date}}', '{{daysData.secondday.date}}', '{{daysData.thirdday.date}}', '{{daysData.fourthday.date}}']
         },
         options: {
             responsive: true,
@@ -135,51 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
         addTemperature(myChart, time, data.temp)
         addHumidity(humiChart, time, data.humi)
     })
-
-
-    const soilhumiCtx = document.getElementById('soilHumiChart').getContext('2d');
-    const soilhumiChart = new Chart(soilhumiCtx, {
-    type: 'bar',             // 'line', 'bar', 'bubble' and 'scatter' types are supported
-    data: {
-        datasets: [{
-        label: 'Soil Humidity',
-        data: [],
-        backgroundColor: 'rgba(191, 56, 135, 0.2)',
-        borderWidth: 0.3,             // empty at the beginning
-        }],
-    },
-    options: {
-        scales: {
-            x: {
-                type: 'realtime',   // x axis will auto-scroll from right to left
-                realtime: {         // per-axis options
-                duration: 20000,  // data in the past 20000 ms will be displayed
-                refresh: 5000,    // onRefresh callback will be called every 1000 ms
-                delay: 5000,      // delay of 1000 ms, so upcoming values are known before plotting a line
-                pause: false,     // chart is not paused
-                ttl: undefined,   // data will be automatically deleted as it disappears off the chart
-                frameRate: 30,    // data points are drawn 30 times every second
-                // a callback to update datasets
-                onRefresh: chart => {
-                    getData()
-                    // query your data source and get the array of {x: timestamp, y: value} objects
-                    var data = { x: Date.now(), y: chartData.soilHumi};
-                    // append the new data array to the existing chart data
-                    chart.data.datasets[0].data.push(data);
-                    }
-                }
-            },
-            y: {
-                    min: 0,
-                    max: 100,
-                },
-        },
-        responsive: true,
-    }
-    });
-
-     
-
     
 })
 </script>

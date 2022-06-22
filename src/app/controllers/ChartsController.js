@@ -30,18 +30,26 @@ class ChartsController {
                     console.log(ChartsData);
                     var daysData = {
                         firstday: {
+                            date: null,
+                            total: 0,
                             withMask: 0,
                             noMask: 0,
                         },
                         secondday: {
+                            date: null,
+                            total: 0,
                             withMask: 0,
                             noMask: 0,
                         },
                         thirdday: {
+                            date: null,
+                            total: 0,
                             withMask: 0,
                             noMask: 0,
                         },
                         fourthday: {
+                            date: null,
+                            total: 0,
                             withMask: 0,
                             noMask: 0,
                         },
@@ -50,31 +58,40 @@ class ChartsController {
                         createdAt: {
                             $gte: new Date(Date.now() - 60 * 60 * 24 * 1000)
                         }
-                    });
-                    firstday.forEach((result) => {
-                        if(result.withMask) {
+                    })
+                    firstday.forEach((item) => {
+                        console.log("T asd")
+                        daysData.firstday.date = item.createdAt.toLocaleDateString();
+                        daysData.firstday.total++;
+                        if(item.withMask) {
                             daysData.firstday.withMask++;
-                        } else daysData.firstday.noMask++;
-                    });
+                        }
+                        else daysData.firstday.noMask++;
+                    })
                     var secondday = await EnterLogs.find({
                         createdAt: {
                             $gte: new Date(new Date() - 2* 60 * 60 * 24 * 1000),
                             $lte: new Date(new Date() - 60 * 60 * 24 * 1000)
                         }
                     });
-                    secondday.forEach((result) => {
-                        if(result.withMask) {
+                    secondday.forEach((item)=> {
+                        daysData.secondday.date = item.createdAt.toLocaleDateString();
+                        daysData.secondday.total++;
+                        if(item.withMask) {
                             daysData.secondday.withMask++;
-                        } else daysData.secondday.noMask++;
-                    });
+                        }
+                        else daysData.secondday.noMask++;
+                    })
                     var thirdday = await EnterLogs.find({
                         createdAt: {
                             $gte: new Date(new Date() - 3* 60 * 60 * 24 * 1000),
-                            $lte: new Date(new Date() - 2*60 * 60 * 24 * 1000)
+                            $lte: new Date(new Date() - 2 *60 * 60 * 24 * 1000)
                         }
                     });
-                    thirdday.forEach((result) => {
-                        if(result.withMask) {
+                    thirdday.forEach((item) => {
+                        daysData.thirdday.date = item.createdAt.toLocaleDateString();
+                        daysData.thirdday.total++;
+                        if(item.withMask) {
                             daysData.thirdday.withMask++;
                         } else daysData.thirdday.noMask++;
                     });
@@ -84,8 +101,11 @@ class ChartsController {
                             $lte: new Date(new Date() - 3*60 * 60 * 24 * 1000)
                         }
                     });
-                    fourthday.forEach((result) => {
-                        if(result.withMask) {
+                    fourthday.forEach((item) => {
+                        console.log("T asd")
+                        daysData.fourthday.date = item.createdAt.toLocaleDateString();
+                        daysData.fourthday.total++;
+                        if(item.withMask) {
                             daysData.fourthday.withMask++;
                         } else daysData.fourthday.noMask++;
                     });
