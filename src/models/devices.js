@@ -5,7 +5,8 @@ const deviceSchema = new Schema(
     {
         _id: { type: mongoose.Types.ObjectId, require: true },
         name: { type: String, require: true },
-        ip: {type: String, require: true}
+        ip: {type: String, require: true},
+        imgUrl: {type: String, require: true}
     },
     {
         timestamps: true,
