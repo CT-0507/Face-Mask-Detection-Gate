@@ -1,13 +1,14 @@
 <div class='container-fluid'>
     <div class='row justify-content-center'>
-        <div class='col col-5 mr-5'>
-            <div class='chart-container' style='width:300px;height:300px;background-color: rgba(255, 255, 255, 0.3);'>
-                <canvas id='Ratio-Chart' width='300' height='300'></canvas>
+        <div class='col col-6 d-flex justify-content-center '>
+            <div class='chart-container' style='width:300px;background-color: rgba(255, 255, 255, 0.808);'>
+                <canvas id='Ratio-Chart' style=""></canvas>
             </div>
         </div>
-        <div class="col col-5 mr-5">
-            <div class='chart-container' style='width:600px;height:300px;background-color: rgba(21, 223, 179, 0.3);'>
-                <canvas id='Statics-Chart' width='600' height='300'></canvas>
+        <!--width:600px;height:300px; -->
+        <div class="col col-6">
+            <div class='chart-container' style='background-color: rgba(255, 255, 255, 0.808);'>
+                <canvas id='Statics-Chart'></canvas>
             </div>
         </div>
     </div>
@@ -125,17 +126,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'bar',
                 label: 'Total',
                 data: [{{{daysData.firstday.total}}}, {{{daysData.secondday.total}}}, {{{daysData.thirdday.total}}}, {{{daysData.fourthday.total}}}],
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                backgroundColor: 'rgba(247, 234, 0, 1)',
             }, {
                 type: 'bar',
                 label: 'No mask',
                 data: [{{{daysData.firstday.noMask}}}, {{{daysData.secondday.noMask}}}, {{{daysData.thirdday.noMask}}}, {{{daysData.fourthday.noMask}}}],
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                backgroundColor: 'rgba(243, 36, 36, 1)',
             },{
                 type: 'bar',
                 label: 'With Mask',
                 data: [{{{daysData.firstday.withMask}}}, {{{daysData.secondday.withMask}}}, {{{daysData.thirdday.withMask}}}, {{{daysData.fourthday.withMask}}}],
-                backgroundColor: 'rgba(255, 205, 86, 0.2)',
+                backgroundColor: 'rgba(62, 199, 11, 1)',
             }],
             labels: ['{{daysData.firstday.date}}', '{{daysData.secondday.date}}', '{{daysData.thirdday.date}}', '{{daysData.fourthday.date}}']
         },
