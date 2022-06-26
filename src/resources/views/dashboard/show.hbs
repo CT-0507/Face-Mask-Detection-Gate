@@ -22,6 +22,7 @@
                     <span class="badge badge-danger">Fail</span>
                     {{/if}}
                     <p>{{updatedAt}}<p>
+                    <a href="" class="btn btn-link" data-toggle="modal" data-id="{{_id}}" data-target="#delete-log-modal">Remove</a>
                 </div>
                 <img class="card-img-top col-4 p-2" src="{{imgUrl}}" alt="Card image cap">
             </div>
@@ -30,3 +31,43 @@
     {{/each}}
 </div>
 
+{{!-- Delete Modal --}}
+<div id="delete-log-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove log?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove this log</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button id="btn-delete-log" type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- Hidden Delete Form --}}
+<form name="delete-log-form" method="POST"></form>
+
+{{!-- Scripts --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteForm = document.forms['delete-log-form'];
+        var btnDeleteLog = document.getElementById('btn-delete-log');
+        var logid;
+        $('#delete-log-modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            logId = button.data('id') // Extract info from data-* attributes
+        });
+        btnDeleteLog.onclick = function () {
+            deleteForm.action = '/dashboard/delete/' + logId + '?_method=DELETE';
+            deleteForm.submit();
+        };
+    })
+</script>
