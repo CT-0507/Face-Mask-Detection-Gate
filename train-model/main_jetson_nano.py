@@ -335,12 +335,12 @@ if __name__ == '__main__':
     start_thread(refresh_device, (refreshDeviceApi, deviceID, refreshDelay))
     info = {'ip': deviceIP, 'id': deviceID}
 
-    # print('Kết nối Arduino')
-    # ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
-    # time.sleep(1)
+    print('Kết nối Arduino')
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
+    time.sleep(1)
     
     print('Kết nối Arduino')
-    ser = serial.Serial('COM12', 9600, timeout = 1)
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
     time.sleep(1)
     
     

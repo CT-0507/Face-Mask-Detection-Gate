@@ -243,7 +243,10 @@ def video_capture(frames):
             frame = frames.get()
 
             new_frame_time = time.time()
-            fps = 1/(new_frame_time-prev_frame_time)
+            if new_frame_time - prev_frame_time > 0:
+                fps = 1/(new_frame_time-prev_frame_time)
+            else: 
+                fps = 1
             prev_frame_time = new_frame_time
             fps = int(fps)
             fps = str(fps)
@@ -304,12 +307,14 @@ if __name__ == '__main__':
 
     manager = multiprocessing.Manager()
     records = manager.dict({'mask':'', 'noMask':''})
+    deviceIP = ''
+    deviceID = ''
 
-    deviceIP = get_current_ip()
-    print(f'Device IP is {deviceIP}')
-    deviceID = register_device(updateDeviceApi)
-    print(f'Device ID is {deviceID}')
-    start_thread(refresh_device, (refreshDeviceApi, deviceID, refreshDelay))
+    # deviceIP = get_current_ip()
+    # print(f'Device IP is {deviceIP}')
+    # deviceID = register_device(updateDeviceApi)
+    # print(f'Device ID is {deviceID}')
+    # start_thread(refresh_device, (refreshDeviceApi, deviceID, refreshDelay))
     info = {'ip': deviceIP, 'id': deviceID}
 
 
