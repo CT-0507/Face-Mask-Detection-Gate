@@ -17,9 +17,9 @@ import requests
 from flask import Flask, render_template, Response
 
 
-enterlogApi = 'http://localhost:3000/enterlogs/upload'
-updateDeviceApi = 'http://localhost:3000/update/device'
-refreshDeviceApi = 'http://localhost:3000/refresh'
+enterlogApi = 'http://173.31.250.62:3000/enterlogs/upload'
+updateDeviceApi = 'http://173.31.250.62:3000/update/device'
+refreshDeviceApi = 'http://173.31.250.62:3000/refresh'
 deviceIP = None
 deviceID = None
 refreshDelay = 180 # 3 phut
